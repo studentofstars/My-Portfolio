@@ -1,0 +1,710 @@
+<!--
+Create a complete animated portfolio website for Mrutyunjaya Muduli.
+
+🔧 Project Requirements:
+1. Use HTML5 and TailwindCSS for styling and layout.
+2. Include external JS via script.js and animations using GSAP.
+3. Add a 3D galaxy background using Three.js:
+   - Galaxy texture wrapped on an inverted sphere
+   - Slowly rotating background
+   - Additional randomly placed stars (white dots)
+4. Responsive full-screen Hero section:
+   - Headline: “Exploring the Cosmos Through Code”
+   - Subheading and two buttons: “Download CV” and “View Projects”
+   - Buttons should link to a local PDF and an anchor section
+5. Additional sections:
+   - About Me: With profile image and description
+   - Projects: Cards with GitHub/Streamlit links
+   - Experience: Timeline or flex layout
+   - Skills: Grid with icons and labels
+   - Awards & Workshops: List
+   - Contact: Simple form + social icons
+6. Animate elements on scroll using GSAP.
+7. Link Mrutyunjaya_Muduli_CV.pdf from /assets/ directory.
+8. Make it mobile-friendly (use Tailwind breakpoints).
+9. Host galaxy.jpg in /assets/textures/ and image.jpg in /assets/images/.
+
+💡 File structure:
+- index.html
+- script.js
+- /assets/
+  - /textures/ → galaxy.jpg
+  - /images/ → image.jpg, project thumbnails
+  - Mrutyunjaya_Muduli_CV.pdf
+
+Use CDN for TailwindCSS, GSAP, and Three.js.
+
+Everything should be semantically structured and styled.
+
+Generate index.html and script.js based on this setup.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrutyunjaya Muduli - Portfolio</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            border: 2px solid #60a5fa;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #60a5fa;
+            color: #1e293b;
+        }
+        
+        .project-card {
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .skill-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .skill-icon:hover {
+            transform: scale(1.1);
+            color: #60a5fa;
+        }
+        
+        .timeline-item {
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            background: #60a5fa;
+            border-radius: 50%;
+            border: 4px solid #1e293b;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: 40px;
+            bottom: -40px;
+            width: 2px;
+            background: #60a5fa;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+    <!-- Three.js Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold text-glow">MM</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#awards" class="nav-link">Awards</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <button class="md:hidden text-2xl" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="flex flex-col space-y-4 mt-4">
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#awards" class="nav-link">Awards</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center text-center px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-glow">
+                Exploring the Cosmos Through Code
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300">
+                Astronomy driven coder bridging theoretical insights and real-world cosmic data
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="assets/Mrutyunjaya_Muduli_CV.pdf" target="_blank" 
+                   class="btn-primary px-8 py-4 rounded-full text-lg font-semibold">
+                    <i class="fas fa-download mr-2"></i>Download CV
+                </a>
+                <a href="#projects" 
+                   class="btn-secondary px-8 py-4 rounded-full text-lg font-semibold text-blue-400">
+                    <i class="fas fa-rocket mr-2"></i>View Projects
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Me Section -->
+    <section id="about" class="py-20 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">About Me</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="flex justify-center">
+                    <img src="assets/images/image.jpg" alt="Mrutyunjaya Muduli" 
+                         class="w-80 h-80 rounded-full object-cover border-4 border-blue-400 shadow-lg">
+                </div>
+                <div class="space-y-6">
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        I'm Mrutyunjaya Muduli, a Computer Science and Engineering student at Visvesvaraya Technological University 
+                        with a deep passion for astronomical research and computational astrophysics. Currently serving as a Research 
+                        Intern at the Indian Institute of Astrophysics, Bengaluru, where I conduct comprehensive studies of solar 
+                        radio bursts and their association with solar flares and coronal mass ejections.
+                    </p>
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        My research integrates multiwavelength data from space-based instruments including GOES X-ray observatory 
+                        and LASCO coronagraphs, contributing to enhanced understanding of solar activity and space weather events. 
+                        From developing exoplanet detection simulators to modeling neutron stars and analyzing JWST images, I bridge 
+                        theoretical astronomy with practical computational applications.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-blue-600 px-4 py-2 rounded-full text-sm">Space Technology</span>
+                        <span class="bg-purple-600 px-4 py-2 rounded-full text-sm">Blockchain</span>
+                        <span class="bg-green-600 px-4 py-2 rounded-full text-sm">AI/ML</span>
+                        <span class="bg-red-600 px-4 py-2 rounded-full text-sm">Data Visualization</span>
+                        <span class="bg-yellow-600 px-4 py-2 rounded-full text-sm">Python Development</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Projects</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project Card 1 - JWST Image Visualization -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-telescope text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">JWST Image Visualization</h3>
+                    <p class="text-gray-300 mb-4">Standalone Python script for downloading calibrated FITS images with logarithmic visualization, WCS overlays, and automated source detection via photutils</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/jwst-image-visualization" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <span class="text-xs bg-purple-600 px-2 py-1 rounded">FITS</span>
+                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+                
+                <!-- Project Card 2 - Exoplanet Mass Predictor & Similarity Explorer -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-globe text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Exoplanet Mass Predictor & Similarity Explorer</h3>
+                    <p class="text-gray-300 mb-4">Machine learning web tool using Random Forest regression trained on 600 NASA Exoplanet Archive entries with Euclidean distance-based similarity modeling</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/Mini-Project-continued" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <a href="https://exoplanetsml.streamlit.app/" target="_blank" class="flex items-center text-purple-400 hover:text-purple-300">
+                            <i class="fas fa-play mr-2"></i>Streamlit
+                        </a>
+                        <span class="text-xs bg-yellow-500 px-2 py-1 rounded text-black">ML</span>
+                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+                
+                <!-- Project Card 3 - Exoplanet Detection Simulation -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-rocket text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Exoplanet Detection Simulator</h3>
+                    <p class="text-gray-300 mb-4">Scientific simulator using Python and Plotly-Dash visualizing radial velocity curves with interactive planetary parameters adjustment</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/Exoplanet-Detection-Sim" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <a href="https://exoplanet-detection-sim.streamlit.app/" target="_blank" class="flex items-center text-purple-400 hover:text-purple-300">
+                            <i class="fas fa-play mr-2"></i>Streamlit
+                        </a>
+                        <span class="text-xs bg-yellow-500 px-2 py-1 rounded text-black">⭐ 1</span>
+                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+                
+                <!-- Project Card 4 - Modelling Neutron Star -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-atom text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Modelling Neutron Star</h3>
+                    <p class="text-gray-300 mb-4">Developed numerical models using Newton-Raphson and Runge-Kutta methods to simulate neutron star properties and theoretical characteristics</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/My-Projects/blob/main/Modelling%20Neutron%20Star.ipynb" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <span class="text-xs bg-orange-600 px-2 py-1 rounded">Jupyter</span>
+                        <span class="text-xs bg-green-600 px-2 py-1 rounded">Physics</span>
+                    </div>
+                </div>
+                
+                <!-- Project Card 5 - Decentralized Patent Registry -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-link text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Decentralized Patent Registry</h3>
+                    <p class="text-gray-300 mb-4">Blockchain-based system for secure idea and patent registration using decentralized technology</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/Block-Chain-Project" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <a href="https://block-chain-project.streamlit.app/" target="_blank" class="flex items-center text-purple-400 hover:text-purple-300">
+                            <i class="fas fa-play mr-2"></i>Streamlit
+                        </a>
+                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+                
+                <!-- Project Card 6 - Drought Prediction System -->
+                <div class="project-card glass-effect rounded-xl p-6 hover:shadow-2xl">
+                    <div class="w-full h-48 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-cloud-rain text-6xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Drought Prediction System</h3>
+                    <p class="text-gray-300 mb-4">Machine learning model for predicting drought conditions using environmental data analysis</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/studentofstars/Drought-Prediction" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300">
+                            <i class="fab fa-github mr-2"></i>GitHub
+                        </a>
+                        <a href="https://drought-prediction-project.streamlit.app/" target="_blank" class="flex items-center text-purple-400 hover:text-purple-300">
+                            <i class="fas fa-play mr-2"></i>Streamlit
+                        </a>
+                        <span class="text-xs bg-blue-600 px-2 py-1 rounded">Python</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Experience</h2>
+            <div class="relative">
+                <div class="timeline-line"></div>
+                
+                <!-- Experience Item 1 -->
+                <div class="timeline-item pl-8 mb-12">
+                    <div class="glass-effect rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-400">Research Intern</h3>
+                                <h4 class="text-lg text-gray-300">Indian Institute of Astrophysics, Bengaluru</h4>
+                            </div>
+                            <span class="text-sm text-gray-400 mt-2 md:mt-0">Nov 2024 - Present</span>
+                        </div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Conducted comprehensive study of solar radio bursts, analyzing their association with solar flares, coronal mass ejections (CMEs), and jets using e-CALLISTO spectrograph datasets</li>
+                            <li>• Integrated multiwavelength data from GOES X-ray observatory and LASCO coronagraphs to uncover physical processes and establish spatial-temporal relationships</li>
+                            <li>• Provided insights into solar radio burst mechanisms, contributing to enhanced understanding of solar activity and space weather events</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Experience Item 2 -->
+                <div class="timeline-item pl-8 mb-12">
+                    <div class="glass-effect rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-400">Technical Member</h3>
+                                <h4 class="text-lg text-gray-300">Association of Indian Physicists, Barnala, Punjab</h4>
+                            </div>
+                            <span class="text-sm text-gray-400 mt-2 md:mt-0">Apr 2024 - Present</span>
+                        </div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Managed 5 social media platforms, increasing engagement through custom-designed posters and regular physics outreach campaigns</li>
+                            <li>• Supported outreach campaigns, webinars, and event coordination to promote physics education</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Experience Item 3 -->
+                <div class="timeline-item pl-8 mb-12">
+                    <div class="glass-effect rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-400">Computer Science & Engineering Student</h3>
+                                <h4 class="text-lg text-gray-300">Visvesvaraya Technological University, Bengaluru</h4>
+                            </div>
+                            <span class="text-sm text-gray-400 mt-2 md:mt-0">Dec 2022 - Present</span>
+                        </div>
+                        <p class="text-gray-300">
+                            Pursuing Bachelor's of Engineering in Computer Science and Engineering with focus on 
+                            astronomical computing, machine learning applications in astrophysics, and space technology development.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Experience Item 4 -->
+                <div class="timeline-item pl-8 mb-12">
+                    <div class="glass-effect rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-400">Astronomy Camp Volunteer</h3>
+                                <h4 class="text-lg text-gray-300">Bengaluru Astronomy Club</h4>
+                            </div>
+                            <span class="text-sm text-gray-400 mt-2 md:mt-0">Mar 2024</span>
+                        </div>
+                        <p class="text-gray-300">
+                            Volunteered at astronomy camp organized by Bengaluru Astronomy Club at Gulapura, Karnataka, 
+                            ensuring smooth conduction of camp activities and promoting astronomical education.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Skills</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Core Programming -->
+                <div class="text-center">
+                    <i class="fab fa-python skill-icon text-6xl text-blue-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Python</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-code skill-icon text-6xl text-green-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Machine Learning</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fab fa-git-alt skill-icon text-6xl text-red-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Git Version Control</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fab fa-linux skill-icon text-6xl text-gray-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Linux Command</h3>
+                </div>
+                
+                <!-- Data Science & Astronomy -->
+                <div class="text-center">
+                    <i class="fas fa-chart-bar skill-icon text-6xl text-green-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Data Analytics</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-brain skill-icon text-6xl text-purple-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Statistical Methods</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-chart-line skill-icon text-6xl text-blue-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Time Series Analysis</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-calculator skill-icon text-6xl text-yellow-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Numerical Methods</h3>
+                </div>
+                
+                <!-- Space & Astronomy Tools -->
+                <div class="text-center">
+                    <i class="fas fa-telescope skill-icon text-6xl text-indigo-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">HEASoft (X-Ray)</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-satellite skill-icon text-6xl text-cyan-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">pyCallisto</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-globe skill-icon text-6xl text-green-600 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Photutils</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-image skill-icon text-6xl text-purple-400 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">FITS Processing</h3>
+                </div>
+                
+                <!-- Office & Development -->
+                <div class="text-center">
+                    <i class="fas fa-file-alt skill-icon text-6xl text-orange-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Microsoft Office</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-code-branch skill-icon text-6xl text-red-600 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Web Development</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-stream skill-icon text-6xl text-pink-500 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Streamlit</h3>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-sun skill-icon text-6xl text-orange-600 mb-4 block"></i>
+                    <h3 class="text-lg font-semibold">Solar Physics</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Awards & Workshops Section -->
+    <section id="awards" class="py-20 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Awards & Workshops</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Awards -->
+                <div class="glass-effect rounded-xl p-6">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400">
+                        <i class="fas fa-trophy mr-3"></i>Achievements
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-medal text-yellow-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Gold Honour - International Astronomy Competition</h4>
+                                <p class="text-gray-300 text-sm">Three-stage competition (Germany), June 2023</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-purple-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Best Young Talent - Institute for Advanced Research in Sciences</h4>
+                                <p class="text-gray-300 text-sm">Recognition for astronomical research, December 2024</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-code-branch text-green-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Active Research Contributor</h4>
+                                <p class="text-gray-300 text-sm">Solar physics research at Indian Institute of Astrophysics</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Memberships -->
+                <div class="glass-effect rounded-xl p-6">
+                    <h3 class="text-2xl font-bold mb-6 text-green-400">
+                        <i class="fas fa-users mr-3"></i>Professional Memberships
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-globe text-blue-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Space Generation Advisory Council</h4>
+                                <p class="text-gray-300 text-sm">Global space advocacy organization (June 2023 - Present)</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-atom text-purple-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Association of Indian Physicists</h4>
+                                <p class="text-gray-300 text-sm">Technical Member (January 2024 - Present)</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-telescope text-orange-400 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold">Bengaluru Astronomy Club</h4>
+                                <p class="text-gray-300 text-sm">Active Member (February 2024 - Present)</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Workshops & Training -->
+            <div class="mt-12">
+                <h3 class="text-3xl font-bold text-center mb-8 text-purple-400">
+                    <i class="fas fa-graduation-cap mr-3"></i>Workshops & Professional Training
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">Course on Satellite Design for Space Sciences</h4>
+                        <p class="text-sm text-gray-400 mb-3">May - August 2025</p>
+                        <p class="text-gray-300 text-sm">Advanced training in satellite design principles and space science applications.</p>
+                    </div>
+                    
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">IDIA/BRICS Astronomy Data Analytics Training</h4>
+                        <p class="text-sm text-gray-400 mb-3">8-week intensive program (2025)</p>
+                        <p class="text-gray-300 text-sm">Data science and ML integration with astronomical research, including capstone project.</p>
+                    </div>
+                    
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">Introduction to Astronomy Research (Intro2Astro)</h4>
+                        <p class="text-sm text-gray-400 mb-3">July - August 2024</p>
+                        <p class="text-gray-300 text-sm">8-week program with Fei Dai (University of Hawaii) and Howard Isaacson (UC Berkeley).</p>
+                    </div>
+                    
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">Sagan Exoplanet Summer Workshop</h4>
+                        <p class="text-sm text-gray-400 mb-3">July 2024 - NASA Caltech</p>
+                        <p class="text-gray-300 text-sm">Direct imaging advances from Young Jupiters to Habitable Earths (hybrid workshop).</p>
+                    </div>
+                    
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">Observational Astrophysics Winter School</h4>
+                        <p class="text-sm text-gray-400 mb-3">November 2023 - January 2024</p>
+                        <p class="text-gray-300 text-sm">30-day program on multi-messenger astronomy with NASA HEASoft and Python programming.</p>
+                    </div>
+                    
+                    <div class="glass-effect rounded-xl p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">National Physics Symposium</h4>
+                        <p class="text-sm text-gray-400 mb-3">September 2023</p>
+                        <p class="text-gray-300 text-sm">Flash talk: "The Cosmic Enigma: Analysis of Question Mark Galaxy discovered by JWST".</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Get In Touch</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="glass-effect rounded-xl p-6">
+                    <h3 class="text-2xl font-bold mb-6">Send a Message</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <input type="text" placeholder="Your Name" 
+                                   class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="Your Email" 
+                                   class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <textarea placeholder="Your Message" rows="5" 
+                                      class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">
+                            <i class="fas fa-paper-plane mr-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="space-y-8">
+                    <div class="glass-effect rounded-xl p-6">
+                        <h3 class="text-2xl font-bold mb-6">Connect With Me</h3>
+                        <div class="space-y-4">
+                            <a href="mailto:mudulimrutyunjaya42@gmail.com" class="flex items-center text-gray-300 hover:text-blue-400 transition-colors">
+                                <i class="fas fa-envelope text-xl mr-4"></i>
+                                mudulimrutyunjaya42@gmail.com
+                            </a>
+                            <a href="https://github.com/studentofstars" target="_blank" class="flex items-center text-gray-300 hover:text-blue-400 transition-colors">
+                                <i class="fab fa-github text-xl mr-4"></i>
+                                github.com/studentofstars
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="glass-effect rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Follow Me</h3>
+                        <div class="flex space-x-4">
+                            <a href="https://www.linkedin.com/in/mrutyunjaya-muduli-8a124a257/" target="_blank" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors">
+                                <i class="fab fa-linkedin text-xl"></i>
+                            </a>
+                            <a href="https://github.com/studentofstars" target="_blank" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="https://x.com/student0fstars" target="_blank" class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center hover:bg-blue-300 transition-colors">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                            <a href="https://www.instagram.com/_.mrutyunjaya._/" target="_blank" class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center hover:bg-pink-400 transition-colors">
+                                <i class="fab fa-instagram text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 px-4 border-t border-slate-700">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-400">
+                © 2025 Mrutyunjaya Muduli. All rights reserved. Made with <i class="fas fa-heart text-red-500"></i> and lots of ☕
+            </p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
