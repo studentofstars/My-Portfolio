@@ -161,9 +161,9 @@ Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 
 ## 📞 Contact
 
-- **Email**: mrutyunjaya.muduli@example.com
-- **GitHub**: [MrutyunjayaMuduli](https://github.com/MrutyunjayaMuduli)
-- **LinkedIn**: [mrutyunjaya-muduli](https://linkedin.com/in/mrutyunjaya-muduli)
+- **Email**: mudulimrutyunjaya42@gmail.com
+- **GitHub**: [MrutyunjayaMuduli](https://github.com/studentofstars)
+- **LinkedIn**: [mrutyunjaya-muduli](https://www.linkedin.com/in/mrutyunjaya-muduli-8a124a257?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
 ## 📄 License
 
