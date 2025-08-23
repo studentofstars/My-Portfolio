@@ -511,27 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Don't prevent default - let FormSubmit handle it
             return true;
-                
-                if (!response.ok) {
-                    throw new Error(result.errors ? result.errors.join(', ') : result.error || 'Failed to send message');
-                }
-                
-                // Success animation
-                submitBtn.textContent = '✅ Sent!';
-                submitBtn.classList.remove('opacity-75');
-                submitBtn.classList.add('bg-green-600');
-                
-                // Show success message
-                showNotification(result.message || 'Thank you for your message! I\'ll get back to you soon.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-                
-                // Reset button after delay
-                setTimeout(() => {
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.classList.remove('bg-green-600');
-                    submitBtn.disabled = false;
         });
     }
     
@@ -658,49 +637,4 @@ document.addEventListener('DOMContentLoaded', () => {
             window.bigBangSoundPlayed = true;
         }
     }, { once: true });
-    
-    // Handle form submissions
-    const formSubmitContactForm = document.getElementById('contactForm');
-    if (formSubmitContactForm) {
-        formSubmitContactForm.addEventListener('submit', function(event) {
-            // Don't prevent default form submission - let the native action work for production
-            // This is just to provide better feedback when testing locally
-            
-            const submitBtn = formSubmitContactForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            
-            // Check if we're in a local environment
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' || 
-                           window.location.protocol === 'file:';
-                           
-            if (isLocal) {
-                event.preventDefault(); // Only prevent default on local
-                
-                // Show processing state
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-                submitBtn.disabled = true;
-                
-                // Simulate submission locally
-                setTimeout(() => {
-                    // Reset button
-                    submitBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Message Sent!';
-                    submitBtn.classList.add('bg-green-600');
-                    
-                    // Show local test message
-                    alert('Local Testing Mode: In production, your message will be sent via FormSubmit to your email address. The form has been configured correctly.');
-                    
-                    // Reset form
-                    formSubmitContactForm.reset();
-                    
-                    // Restore button after delay
-                    setTimeout(() => {
-                        submitBtn.innerHTML = originalBtnText;
-                        submitBtn.disabled = false;
-                        submitBtn.classList.remove('bg-green-600');
-                    }, 3000);
-                }, 1500);
-            }
-        });
-    }
 });
