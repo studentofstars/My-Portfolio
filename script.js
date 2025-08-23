@@ -463,61 +463,54 @@ document.addEventListener('DOMContentLoaded', () => {
         window.mouseY = (event.clientY / window.innerHeight) * 2 - 1;
     });
     
-    // Enhanced Form Submission Handler with Database Integration
+    // Form validation before submission to FormSubmit service
     const contactForm = document.querySelector('#contact form');
     if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        contactForm.addEventListener('submit', (e) => {
             // Get form elements
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
             
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.textContent = '🚀 Sending...';
-            submitBtn.classList.add('opacity-75');
+            // Get form data for validation
+            const formData = new FormData(contactForm);
+            const name = formData.get('name') || contactForm.querySelector('input[type="text"]').value;
+            const email = formData.get('email') || contactForm.querySelector('input[type="email"]').value;
+            const message = formData.get('message') || contactForm.querySelector('textarea').value;
             
-            try {
-                // Get form data
-                const formData = new FormData(contactForm);
-                const name = formData.get('name') || contactForm.querySelector('input[type="text"]').value;
-                const email = formData.get('email') || contactForm.querySelector('input[type="email"]').value;
-                const message = formData.get('message') || contactForm.querySelector('textarea').value;
-                
-                // Client-side validation
-                if (!name || !email || !message) {
-                    throw new Error('Please fill in all fields.');
-                }
-                
-                if (name.length < 2 || name.length > 100) {
-                    throw new Error('Name must be between 2 and 100 characters.');
-                }
-                
-                if (message.length < 10 || message.length > 1000) {
-                    throw new Error('Message must be between 10 and 1000 characters.');
-                }
-                
+            // Client-side validation
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (!name || !email || !message) {
+                errorMessage = 'Please fill in all fields.';
+                isValid = false;
+            } else if (name.length < 2 || name.length > 100) {
+                errorMessage = 'Name must be between 2 and 100 characters.';
+                isValid = false;
+            } else if (message.length < 10 || message.length > 1000) {
+                errorMessage = 'Message must be between 10 and 1000 characters.';
+                isValid = false;
+            } else {
                 // Email validation
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(email)) {
-                    throw new Error('Please enter a valid email address.');
+                    errorMessage = 'Please enter a valid email address.';
+                    isValid = false;
                 }
-                
-                // Send to backend
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: name.trim(),
-                        email: email.trim(),
-                        message: message.trim()
-                    })
-                });
-                
-                const result = await response.json();
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                showNotification(errorMessage, 'error');
+                return false;
+            }
+            
+            // Show loading state and let the form submit to FormSubmit service
+            submitBtn.textContent = '🚀 Sending...';
+            submitBtn.classList.add('opacity-75');
+            
+            // Don't prevent default - let FormSubmit handle it
+            return true;
                 
                 if (!response.ok) {
                     throw new Error(result.errors ? result.errors.join(', ') : result.error || 'Failed to send message');
@@ -539,26 +532,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.textContent = originalBtnText;
                     submitBtn.classList.remove('bg-green-600');
                     submitBtn.disabled = false;
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Contact form error:', error);
-                
-                // Error state
-                submitBtn.textContent = '❌ Error';
-                submitBtn.classList.remove('opacity-75');
-                submitBtn.classList.add('bg-red-600');
-                
-                // Show error message
-                showNotification(error.message || 'Failed to send message. Please try again.', 'error');
-                
-                // Reset button after delay
-                setTimeout(() => {
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.classList.remove('bg-red-600');
-                    submitBtn.disabled = false;
-                }, 3000);
-            }
         });
     }
     
