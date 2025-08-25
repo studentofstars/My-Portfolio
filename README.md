@@ -1,8 +1,8 @@
-# 🌌 Mrutyunjaya Muduli - Space Portfolio
+#  Mrutyunjaya Muduli - Space Portfolio
 
 A stunning 3D space-themed portfolio website featuring advanced Three.js graphics, interactive animations, and a complete backend system for contact form management.
 
-## ✨ Features
+##  Features
 
 - **3D Space Background**: Advanced Three.js scene with procedural nebulae, particle systems, and animated objects
 - **Responsive Design**: Mobile-first design with glass morphism effects
@@ -12,7 +12,7 @@ A stunning 3D space-themed portfolio website featuring advanced Three.js graphic
 - **Contact Management**: Backend API for handling contact submissions
 - **Security**: Rate limiting, input validation, and XSS protection
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 ### Frontend
 - HTML5 & CSS3
@@ -28,7 +28,7 @@ A stunning 3D space-themed portfolio website featuring advanced Three.js graphic
 - Security middleware (Helmet, CORS, Rate Limiting)
 - Input validation and sanitization
 
-## 🛸 Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - Node.js (v16 or higher)
@@ -95,7 +95,7 @@ ADMIN_KEY=your-secure-admin-key
 ### Database
 The SQLite database is automatically created on first run. For production, consider migrating to PostgreSQL or MongoDB.
 
-## 📊 API Endpoints
+##  API Endpoints
 
 ### Public Endpoints
 - `GET /api/health` - Health check
@@ -108,7 +108,7 @@ The SQLite database is automatically created on first run. For production, consi
 ### Admin Access
 Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 
-## 🎨 3D Graphics Features
+##  3D Graphics Features
 
 - **Multi-layered Star Systems**: 3 layers with 7,800+ stars
 - **Procedural Nebulae**: 26 colorful nebulae with realistic gradients
@@ -124,7 +124,7 @@ Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 - Touch-friendly interactions
 - Progressive enhancement
 
-## 🔒 Security Features
+##  Security Features
 
 - Input validation and sanitization
 - XSS protection
@@ -133,7 +133,7 @@ Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 - Security headers with Helmet
 - SQL injection prevention
 
-## 📈 Performance
+##  Performance
 
 - Optimized Three.js rendering
 - Efficient particle systems
@@ -141,7 +141,7 @@ Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 - Compressed assets
 - Lazy loading where applicable
 
-## 🎯 Contact Form Features
+##  Contact Form Features
 
 - Real-time validation
 - Loading states and animations
@@ -150,7 +150,7 @@ Add `Authorization: Bearer YOUR_ADMIN_KEY` header to access admin endpoints.
 - IP and user agent logging
 - Admin dashboard for management
 
-## 🌟 Professional Content
+##  Professional Content
 
 - Real astronomical research experience
 - Working project links (Streamlit applications)
