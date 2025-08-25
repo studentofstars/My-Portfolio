@@ -5,7 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="google64503aa31764c9fd" />
-    <title>Mrutyunjaya Muduli - Portfolio</title>
+    <title>Mrutyunjaya Muduli - Portfolio | Astronomy & Computer Science</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Portfolio of Mrutyunjaya Muduli, Computer Science student and astronomy researcher. Projects include JWST image analysis, exoplanet detection, and more.">
+    <meta name="keywords" content="astronomy, computer science, portfolio, space, exoplanet, JWST, data science">
+    <meta name="author" content="Mrutyunjaya Muduli">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Mrutyunjaya Muduli - Space Portfolio">
+    <meta property="og:description" content="Astronomy driven coder bridging theoretical insights and real-world cosmic data">
+    <meta property="og:image" content="https://raw.githubusercontent.com/studentofstars/My-Portfolio/main/assets/images/image.jpg">
+    <meta property="og:url" content="https://mrutyunjayaportfolio.vercel.app/">
+    <meta property="og:type" content="website">
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6ZEXTCJ3BZ"></script>
@@ -17,9 +29,7 @@
     </script>
     
     <!-- TailwindCSS CDN -->
-    <!-- Try this version with integrity hash -->
-    <!-- TailwindCSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
     <!-- GSAP CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -125,6 +135,61 @@
             width: 2px;
             background: #60a5fa;
         }
+        
+        /* Custom form field styles */
+        input, textarea {
+            color: white !important;
+        }
+        
+        ::placeholder {
+            color: #9ca3af !important;
+            opacity: 1;
+        }
+        
+        /* Make sure TailwindCSS works properly by forcing some key styles */
+        .bg-gray-800 {
+            background-color: #1f2937 !important;
+        }
+        
+        .text-white {
+            color: #ffffff !important;
+        }
+        
+        /* Project card background gradients (fix for Tailwind 2.2.19) */
+        .project-card:nth-child(1) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #6366f1, #a855f7) !important;
+        }
+        
+        .project-card:nth-child(2) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #10b981, #0d9488) !important;
+        }
+        
+        .project-card:nth-child(3) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #0ea5e9, #2563eb) !important;
+        }
+        
+        .project-card:nth-child(4) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #a855f7, #ec4899) !important;
+        }
+        
+        .project-card:nth-child(5) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #3b82f6, #8b5cf6) !important;
+        }
+        
+        .project-card:nth-child(6) .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #f97316, #dc2626) !important;
+        }
+        
+        /* Enhanced skill icons with glow and hover animation */
+        .skill-icon {
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.2));
+            transition: all 0.4s ease;
+        }
+        
+        .skill-icon:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -221,7 +286,7 @@
     </section>
     
     <!-- Projects Section -->
-    <section id="projects" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+    <section id="projects" class="py-20 px-4" style="background: linear-gradient(180deg, rgba(13,20,36,0.7) 0%, rgba(13,25,48,0.8) 100%);">
         <div class="container mx-auto max-w-6xl">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Projects</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -414,79 +479,79 @@
     </section>
     
     <!-- Skills Section -->
-    <section id="skills" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+    <section id="skills" class="py-20 px-4" style="background: linear-gradient(180deg, rgba(13,20,36,0.7) 0%, rgba(13,25,48,0.8) 100%);">
         <div class="container mx-auto max-w-6xl">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Skills</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 <!-- Core Programming -->
                 <div class="text-center">
-                    <i class="fab fa-python skill-icon text-6xl text-blue-400 mb-4 block"></i>
+                    <i class="fab fa-python skill-icon text-6xl mb-4 block" style="color: #3776ab;"></i>
                     <h3 class="text-lg font-semibold">Python</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-code skill-icon text-6xl text-green-500 mb-4 block"></i>
+                    <i class="fas fa-code skill-icon text-6xl mb-4 block" style="color: #4caf50;"></i>
                     <h3 class="text-lg font-semibold">Machine Learning</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fab fa-git-alt skill-icon text-6xl text-red-500 mb-4 block"></i>
+                    <i class="fab fa-git-alt skill-icon text-6xl mb-4 block" style="color: #f05032;"></i>
                     <h3 class="text-lg font-semibold">Git Version Control</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fab fa-linux skill-icon text-6xl text-gray-400 mb-4 block"></i>
+                    <i class="fab fa-linux skill-icon text-6xl mb-4 block" style="color: #dfdfdf;"></i>
                     <h3 class="text-lg font-semibold">Linux Command</h3>
                 </div>
                 
                 <!-- Data Science & Astronomy -->
                 <div class="text-center">
-                    <i class="fas fa-chart-bar skill-icon text-6xl text-green-400 mb-4 block"></i>
+                    <i class="fas fa-chart-bar skill-icon text-6xl mb-4 block" style="color: #4ade80;"></i>
                     <h3 class="text-lg font-semibold">Data Analytics</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-brain skill-icon text-6xl text-purple-500 mb-4 block"></i>
+                    <i class="fas fa-brain skill-icon text-6xl mb-4 block" style="color: #c084fc;"></i>
                     <h3 class="text-lg font-semibold">Statistical Methods</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-chart-line skill-icon text-6xl text-blue-500 mb-4 block"></i>
+                    <i class="fas fa-chart-line skill-icon text-6xl mb-4 block" style="color: #3b82f6;"></i>
                     <h3 class="text-lg font-semibold">Time Series Analysis</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-calculator skill-icon text-6xl text-yellow-500 mb-4 block"></i>
+                    <i class="fas fa-calculator skill-icon text-6xl mb-4 block" style="color: #eab308;"></i>
                     <h3 class="text-lg font-semibold">Numerical Methods</h3>
                 </div>
                 
                 <!-- Space & Astronomy Tools -->
                 <div class="text-center">
-                    <i class="fas fa-telescope skill-icon text-6xl text-indigo-400 mb-4 block"></i>
+                    <i class="fas fa-telescope skill-icon text-6xl mb-4 block" style="color: #818cf8;"></i>
                     <h3 class="text-lg font-semibold">HEASoft (X-Ray)</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-satellite skill-icon text-6xl text-cyan-400 mb-4 block"></i>
+                    <i class="fas fa-satellite skill-icon text-6xl text-6xl mb-4 block" style="color: #00ccff;"></i>
                     <h3 class="text-lg font-semibold">pyCallisto</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-globe skill-icon text-6xl text-green-600 mb-4 block"></i>
+                    <i class="fas fa-globe skill-icon text-6xl mb-4 block" style="color: #22c55e;"></i>
                     <h3 class="text-lg font-semibold">Photutils</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-image skill-icon text-6xl text-purple-400 mb-4 block"></i>
+                    <i class="fas fa-image skill-icon text-6xl mb-4 block" style="color: #d8b4fe;"></i>
                     <h3 class="text-lg font-semibold">FITS Processing</h3>
                 </div>
                 
                 <!-- Office & Development -->
                 <div class="text-center">
-                    <i class="fas fa-file-alt skill-icon text-6xl text-orange-500 mb-4 block"></i>
+                    <i class="fas fa-file-alt skill-icon text-6xl mb-4 block" style="color: #ff6a00;"></i>
                     <h3 class="text-lg font-semibold">Microsoft Office</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-code-branch skill-icon text-6xl text-red-600 mb-4 block"></i>
+                    <i class="fas fa-code-branch skill-icon text-6xl mb-4 block" style="color: #ef4444;"></i>
                     <h3 class="text-lg font-semibold">Web Development</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-stream skill-icon text-6xl text-pink-500 mb-4 block"></i>
+                    <i class="fas fa-stream skill-icon text-6xl mb-4 block" style="color: #ec4899;"></i>
                     <h3 class="text-lg font-semibold">Streamlit</h3>
                 </div>
                 <div class="text-center">
-                    <i class="fas fa-sun skill-icon text-6xl text-orange-600 mb-4 block"></i>
+                    <i class="fas fa-sun skill-icon text-6xl mb-4 block" style="color: #ff5500;"></i>
                     <h3 class="text-lg font-semibold">Solar Physics</h3>
                 </div>
             </div>
@@ -606,7 +671,7 @@
     </section>
     
     <!-- Contact Section -->
-    <section id="contact" class="py-20 px-4 bg-slate-800 bg-opacity-50">
+    <section id="contact" class="py-20 px-4" style="background: linear-gradient(180deg, rgba(13,20,36,0.7) 0%, rgba(13,25,48,0.8) 100%);">
         <div class="container mx-auto max-w-4xl">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-glow">Get In Touch</h2>
             <div class="grid md:grid-cols-2 gap-12">
@@ -622,15 +687,15 @@
                         
                         <div>
                             <input type="text" name="name" placeholder="Your Name" required
-                                   class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none">
+                                   class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-400 focus:outline-none text-white">
                         </div>
                         <div>
                             <input type="email" name="email" placeholder="Your Email" required
-                                   class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none">
+                                   class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-400 focus:outline-none text-white">
                         </div>
                         <div>
                             <textarea name="message" placeholder="Your Message" rows="5" required
-                                      class="w-full p-3 rounded-lg bg-slate-700 border border-slate-600 focus:border-blue-400 focus:outline-none resize-none"></textarea>
+                                      class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-400 focus:outline-none resize-none text-white"></textarea>
                         </div>
                         <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">
                             <i class="fas fa-paper-plane mr-2"></i>Send Message
@@ -677,7 +742,7 @@
     </section>
     
     <!-- Footer -->
-    <footer class="py-8 px-4 border-t border-slate-700">
+    <footer class="py-8 px-4">
         <div class="container mx-auto text-center">
             <p class="text-gray-400">
                 © 2025 Mrutyunjaya Muduli. All rights reserved. Made with <i class="fas fa-heart text-red-500"></i> and lots of ☕

@@ -1,3 +1,8 @@
+// Helper function to detect search engine bots
+function isBot() {
+    return /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Content Loaded - Initializing space portfolio...');
     
@@ -121,6 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Three.js Advanced Space Background Setup
     console.log('Setting up Three.js scene...');
+    
+    // Skip Three.js for search engine bots to avoid WebGL errors
+    if (isBot()) {
+        console.log('Bot detected, skipping Three.js initialization');
+        return;
+    }
     
     // Check if Three.js is loaded
     if (typeof THREE === 'undefined') {
